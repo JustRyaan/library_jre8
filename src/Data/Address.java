@@ -9,38 +9,38 @@ public class Address implements Serializable {
     private String country = "Scotland";
     private String postcode;
 
-    private String getAddress() {
+    public String getAddress() {
         return this.address;
     }
-    private String getTown() {
+    public String getTown() {
         return this.town;
     }
-    private String getCounty() {
+    public String getCounty() {
         return this.county;
     }
-    private String getCountry() {
+    public String getCountry() {
         return this.country;
     }
-    private String getPostcode() {
+    public String getPostcode() {
         return this.postcode;
     }
-    private String getFullAddress() {
+    public String getFullAddress() {
         return this.address + "\n" + this.town + ", " + this.county + "\n" + this.country + " " + this.postcode;
     }
 
-    private void setAddress(String address) {
+    public void setAddress(String address) {
         this.address = address;
     }
-    private void setTown(String town) {
+    public void setTown(String town) {
         this.town = town;
     }
-    private void setCounty(String county) {
+    public void setCounty(String county) {
         this.county = county;
     }
-    private void setCountry(String country) {
+    public void setCountry(String country) {
         this.country = country;
     }
-    private void setPostcode(String postcode) {
+    public void setPostcode(String postcode) {
         this.postcode = postcode;
     }
 }
