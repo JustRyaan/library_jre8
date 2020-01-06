@@ -1,5 +1,3 @@
-package Data;
-
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -20,10 +18,9 @@ public class Person implements Serializable {
         this.phone = phone;
     }
     // Member Constructor
-    public Person(String forename, String surname, String email, String phone, LocalDate DOB, Address address) {
+    public Person(String forename, String surname, String phone, LocalDate DOB, Address address) {
         this.forename = forename;
         this.surname = surname;
-        this.email = email;
         this.phone = phone;
         this.DOB = DOB;
         this.address = address;
@@ -54,10 +51,8 @@ public class Person implements Serializable {
     }
 
     // Setter Methods
-    public void setForename(String forename) {
+    public void setName(String forename, String surname) {
         this.forename = forename;
-    }
-    public void setSurname(String surname) {
         this.surname = surname;
     }
     public void setEmail(String email) {

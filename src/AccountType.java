@@ -1,13 +1,11 @@
-package Data;
-
-public enum AccountStatus {
-    ACTIVE("Active"),
-    BLOCKED("Blocked"),
-    CLOSED("Closed");
+public enum AccountType {
+    FULL("Full Member"),
+    CASUAL("Casual Member"),
+    STAFF("Staff Member");
 
     private final String displayName;
 
-    AccountStatus(String displayName) {
+    AccountType(String displayName) {
         this.displayName = displayName;
     }
 
@@ -17,6 +15,6 @@ public enum AccountStatus {
 
     @Override
     public String toString() {
-        return "Defines account status.";
+        return "Defines account type.";
     }
 }

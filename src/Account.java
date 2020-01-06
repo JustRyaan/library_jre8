@@ -1,13 +1,9 @@
-import Data.AccountStatus;
-import Data.AccountType;
-import Data.Person;
-
 import java.io.Serializable;
 
 public abstract class Account implements Serializable {
 
     private String id;
-    private String password;    // Temporary; add hashing later
+    private String password;
     private AccountStatus status;
     private AccountType type;
     private Person person;
@@ -38,10 +34,11 @@ public abstract class Account implements Serializable {
     public String getPw() {
         return this.password;
     }
-    public boolean checkPassword(String password) {
-        if(this.password.equals(password)) {
-            return true;
-        }
-        return false;
+    public AccountStatus getStatus() {
+        return this.status;
     }
+    public AccountType getType() {
+        return this.type;
+    }
+
 }

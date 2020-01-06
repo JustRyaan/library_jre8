@@ -1,21 +1,26 @@
-import Data.Genre;
-
-public class Book {
-    private String id;
-    private String isbn;
-    private String title;
+public class Book extends PrintMedia {
+    private String ISBN;
     private String author;
-    private Genre genre;
-    private int numPages;
-    private String publisher;
 
-    public Book(String id, String isbn, String title, String author, Genre genre, int numPages, String publisher) {
-        this.id = id;
-        this.isbn = isbn;
-        this.title = title;
+    public Book(String stockID, String title, Double price, Genre genre, String publisher, Integer numPages, String ISBN, String author){
+        super(stockID, title, price, publisher, genre, numPages);
+        this.ISBN = ISBN;
         this.author = author;
-        this.genre = genre;
-        this.numPages = numPages;
-        this.publisher = publisher;
+    }
+
+    // Getter methods
+    public String getISBN() {
+        return this.ISBN;
+    }
+    public String getAuthor() {
+        return this.author;
+    }
+
+    // Setter methods
+    public void setISBN(String ISBN){
+        this.ISBN = ISBN;
+    }
+    public void setAuthor(String author){
+        this.author = author;
     }
 }

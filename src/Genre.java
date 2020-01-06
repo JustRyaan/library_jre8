@@ -1,18 +1,19 @@
-package Data;
+import java.util.HashSet;
+import java.util.Set;
 
 public enum Genre {
     ADVENTURE("Adventure"),
     ART("Art"),
     AUTOBIOGRAPHY("Autobiography"),
     BIOGRAPHY("Biography"),
-    CHILDRENS("Children's"),
+    CHILDRENS("Childrens"),
     COOKBOOK("Cookbook"),
     COMIC("Comic Book"),
     DICTIONARY("Dictionary"),
     DRAMA("Drama"),
     ENCYCLOPEDIA("Encyclopedia"),
     FANTASY("Fantasy"),
-    HEALTH("Health and Well-being"),
+    HEALTH_AND_WELL_BEING("Health and Well Being"),
     HISTORICAL_FICTION("Historical Fiction"),
     HISTORY("History"),
     HUMOuR("Humour"),
@@ -39,8 +40,20 @@ public enum Genre {
         return displayName;
     }
 
+    private final static Set<String> values = new HashSet<String>(Genre.values().length);
+
+    static {
+        for(Genre g: Genre.values())
+            values.add(g.name());
+    }
+
+    public static Boolean contains(String value) {
+        return values.contains(value);
+    }
+
+
     @Override
     public String toString() {
-        return "Defines book genre.";
+        return displayName;
     }
 }

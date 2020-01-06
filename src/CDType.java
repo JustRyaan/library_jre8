@@ -1,13 +1,12 @@
-package Data;
+public enum CDType {
 
-public enum BookStatus {
-    AVAILABLE("Available"),
-    RESERVED("Reserved"),
-    LOANED("Loaned");
+    CDDA("CD-DA"),
+    CDR("CD-R"),
+    CDRW("CD-RW");
 
     private final String displayName;
 
-    BookStatus(String displayName) {
+    CDType(String displayName) {
         this.displayName = displayName;
     }
 
@@ -17,6 +16,7 @@ public enum BookStatus {
 
     @Override
     public String toString() {
-        return "Defines book status.";
+        return "Defines CD type.";
     }
+
 }

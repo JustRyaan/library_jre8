@@ -1,13 +1,13 @@
-package Data;
+public enum VideoFormat {
 
-public enum AccountType {
-    FULL("Full Member"),
-    CASUAL("Casual Member"),
-    STAFF("Staff Member");
+    VCR("VCR"),
+    DVD("DVD"),
+    BLURAY("Blu-ray"),
+    DIGITAL("Digital");
 
     private final String displayName;
 
-    AccountType(String displayName) {
+    VideoFormat(String displayName) {
         this.displayName = displayName;
     }
 
@@ -17,6 +17,7 @@ public enum AccountType {
 
     @Override
     public String toString() {
-        return "Defines account type.";
+        return "Defines video format.";
     }
+
 }
