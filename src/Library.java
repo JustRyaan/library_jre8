@@ -15,20 +15,20 @@ public class Library {
     private static Scanner in = new Scanner(System.in);
 
     public static void main(String[] args) throws Exception {
-        // TODO: main method control loop
+        // Deserialize on startup
         UserStore.restore();
-//        Reservation.restore();
-//        Lending.restore();
-//
-//        UserStore.verify();
+        Catalogue.restore();
+        Reservation.restore();
+        Lending.restore();
 
-        Person rootAdmin = new Person("Admin", "User", "admin@thelibrary.com", "01592 514289");
-        String hashedPass = SCryptUtil.scrypt("testing", 16384, 8, 1);
-        Admin root = new Admin("123456", hashedPass, rootAdmin);
+        // For testing
+        Person rootAdmin = new Person("Admin", "User", "admin@thelibrary.com", "591");
+        String hashedPass = SCryptUtil.scrypt("admin", 16384, 8, 1);
+        Admin root = new Admin("admin", hashedPass, rootAdmin);
         UserStore.addAdmin(root);
 
-
-
+        // TODO: main control loop
+        // Main control loop
         showWelcome();
         if(loggedInUser != null){
             showUserMenu();
@@ -37,27 +37,11 @@ public class Library {
         }
 
 
-//        String date = "19/03/1996";
-//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-//        DateTimeFormatter formatter2 = DateTimeFormatter.ofPattern("dd LLLL yyyy");
-//        LocalDate newDate = LocalDate.parse(date,formatter);
-//        System.out.println(newDate.format(formatter2));
-
-
-//
-//        DataStore.addAdmin(root);
-//
-//        // Create Person
-//        Person testPerson = new Person("Ryan", "Mitchell",
-//                "me@rpmitchell.com", "07887841835");
-//
-//        Member testMember = new Member("1868588", "hello123", AccountStatus.ACTIVE, AccountType.FULL,  testPerson);
-//
-//        DataStore.addMember(testMember);
-
-//        System.out.println(adminLogin("123456", "testing"));
 
         UserStore.store();
+        Catalogue.store();
+        Reservation.store();
+        Lending.store();
 
     }
 
@@ -291,6 +275,52 @@ public class Library {
             return false;
         }
         return SCryptUtil.check(password, UserStore.getMember(id).getPw());
+    }
+
+    // Populates the databases
+    public static void populateUserData() {
+        // Dummy data for first time startup; all users share the password "password", IDs are full names (eg joebloggs,
+        // janedoe etc.). All non-staff members share the same address.
+
+        String hashedUserPass = SCryptUtil.scrypt("password", 16384, 9, 1);
+        Address address = new Address("1 Main Road", "Edinburgh", "EH1 1AA");
+
+        // Staff members
+        Person joe = new Person("Joe", "Bloggs", "jbloggs@thelibrary.com", "784");
+        Member staff1 = new Member("joebloggs", hashedUserPass, AccountStatus.ACTIVE, AccountType.STAFF, joe);
+        UserStore.addMember(staff1);
+        Person jane = new Person("Jane", "Doe", "jdoe@thelibrary.com", "791");
+        Member staff2 = new Member("janedoe", hashedUserPass, AccountStatus.ACTIVE, AccountType.STAFF, jane);
+        UserStore.addMember(staff2);
+        Person alan = new Person("Alan", "Fresco", "afresco@thelibrary.com", "763");
+        Member staff3 = new Member("alanfresco", hashedUserPass, AccountStatus.ACTIVE, AccountType.STAFF, alan);
+        UserStore.addMember(staff3);
+
+        // Full members
+        Person fletch = new Person("Fletch", "Skinner", "07700 900821", "21/07/1973", address);
+        Member full1 = new Member("fletchskinner", hashedUserPass, AccountStatus.BLOCKED, AccountType.FULL, fletch);
+        UserStore.addMember(full1);
+        Person caspian = new Person("Caspian", "Bellevedere", "013149 60478", "12/11/1982", address);
+        Member full2 = new Member("caspianbellevedere", hashedUserPass, AccountStatus.ACTIVE, AccountType.FULL, caspian);
+        UserStore.addMember(full2);
+        Person russel = new Person("Russel", "Sprout", "01592 569910", "03/02/1999", address);
+        Member full3 = new Member("russelsprout", hashedUserPass, AccountStatus.ACTIVE, AccountType.FULL, russel);
+        UserStore.addMember(full3);
+
+        // Casual members
+        Person joss = new Person("Joss", "Eagle", "07543 182748", "19/10/1963", address);
+        Member casual1 = new Member("fletchskinner", hashedUserPass, AccountStatus.ACTIVE, AccountType.CASUAL, joss);
+        UserStore.addMember(casual1);
+        Person malcolm = new Person("Malcolm", "Function", "07721984023", "12/03/2001", address);
+        Member casual2 = new Member("malcolmfunction", hashedUserPass, AccountStatus.ACTIVE, AccountType.CASUAL, malcolm);
+        UserStore.addMember(casual2);
+        Person nathaneal = new Person("Nathaneal", "Down", "01314 95028", "16/05/1993", address);
+        Member casual3 = new Member("nathanealdown", hashedUserPass, AccountStatus.CLOSED, AccountType.CASUAL, nathaneal);
+        UserStore.addMember(casual3);
+
+    }
+    public static void populateMediaData() {
+        // TODO: populate media data at startup
     }
 
     // UX Stuff

@@ -60,7 +60,7 @@ public class Lending implements Serializable {
     public static void store() {
         // Serialize
         try {
-            FileOutputStream lmos = new FileOutputStream("lendingData");
+            FileOutputStream lmos = new FileOutputStream("/data/lendingData.ser");
 
             ObjectOutputStream out = new ObjectOutputStream(lmos);
             out.writeObject(lentMedia);
@@ -75,7 +75,7 @@ public class Lending implements Serializable {
     public static void restore() {
         // Deserialize on startup
         try {
-            FileInputStream lmis = new FileInputStream("lendingData");
+            FileInputStream lmis = new FileInputStream("/data/lendingData.ser");
 
             ObjectInputStream in = new ObjectInputStream(lmis);
             lentMedia = (HashMap) in.readObject();

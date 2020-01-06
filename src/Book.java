@@ -1,4 +1,4 @@
-public class Book extends PrintMedia {
+public abstract class Book extends PrintMedia {
     private String ISBN;
     private String author;
 

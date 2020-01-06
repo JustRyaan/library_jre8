@@ -23,11 +23,11 @@ public class Admin extends Account  {
         Library.clearScreen();
 
         // Automatically assign a 6 digit ID
-        String id = generateID();
+        String id = "M" + generateID();
         while(UserStore.memberExists(id)) {
-            id = generateID();
+            id = "M" + generateID();
         }
-        System.out.println("New ID: " + id);
+        System.out.println("New ID (write this down): " + id);
 
         // Create password and hash it
         System.out.print("Password: ");
@@ -88,7 +88,7 @@ public class Admin extends Account  {
             // Everyone else requires more details
             // D.O.B
             System.out.print("D.O.B (dd/mm/yyyy): ");
-            LocalDate dob = LocalDate.parse(in.nextLine(), formatter);
+            String dob = in.nextLine();
             // Address ln.1
             System.out.print("Street Address: ");
             String address = in.nextLine();
@@ -233,6 +233,7 @@ public class Admin extends Account  {
         System.out.println("Is the above information correct? y/n: ");
         if(in.nextLine().toLowerCase().equals("y")){
             UserStore.addMedia(newBook);
+            Catalogue.addBook(newBook);
             System.out.println("Book added successfully!");
             Library.sleepFor(1500);
             return;
@@ -276,6 +277,7 @@ public class Admin extends Account  {
         System.out.println("Is the above information correct? y/n: ");
         if(in.nextLine().toLowerCase().equals("y")){
             UserStore.addMedia(newJournal);
+            Catalogue.addJournal(newJournal);
             System.out.println("Journal added successfully!");
             Library.sleepFor(1500);
             return;
@@ -317,6 +319,7 @@ public class Admin extends Account  {
         System.out.println("Is the above information correct? y/n: ");
         if(in.nextLine().toLowerCase().equals("y")){
             UserStore.addMedia(newVideo);
+            Catalogue.addVideo(newVideo);
             System.out.println("Video added successfully!");
             Library.sleepFor(1500);
             return;
@@ -361,6 +364,7 @@ public class Admin extends Account  {
         System.out.println("Is the above information correct? y/n: ");
         if(in.nextLine().toLowerCase().equals("y")){
             UserStore.addMedia(newCD);
+            Catalogue.addCD(newCD);
             System.out.println("CD added successfully!");
             Library.sleepFor(1500);
             return;
@@ -390,7 +394,7 @@ public class Admin extends Account  {
         }
         System.out.println("Please choose a genre from the list above: ");
         String type = in.nextLine();
-        type = type.replace(" ", "_").toUpperCase();
+        type = type.replaceAll("\\s", "_").toUpperCase();
         if(!Genre.contains(type)) {
             System.out.println("Something's not right, please check your spelling and try again.");
             return null;

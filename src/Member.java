@@ -16,6 +16,8 @@ public class Member extends Account {
         }
     }
 
+    // TODO: Add search / rent / reserve capability
+
     @Override
     public String toString() {
         return super.getPerson().getFullName();

@@ -10,6 +10,9 @@ public class Person implements Serializable {
     private LocalDate DOB;
     private Address address;
 
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+
     // Staff Constructor
     public Person(String forename, String surname, String email, String phone) {
         this.forename = forename;
@@ -18,11 +21,11 @@ public class Person implements Serializable {
         this.phone = phone;
     }
     // Member Constructor
-    public Person(String forename, String surname, String phone, LocalDate DOB, Address address) {
+    public Person(String forename, String surname, String phone, String DOB, Address address) {
         this.forename = forename;
         this.surname = surname;
         this.phone = phone;
-        this.DOB = DOB;
+        this.DOB = LocalDate.parse(DOB, formatter);
         this.address = address;
     }
 
@@ -62,7 +65,6 @@ public class Person implements Serializable {
         this.phone = phone;
     }
     public void setDOB(String DOB) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         this.DOB = LocalDate.parse(DOB, formatter);
     }
     public void setAddress(Address address) {

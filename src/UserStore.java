@@ -14,7 +14,7 @@ public class UserStore {
         try {
             FileOutputStream memberos = new FileOutputStream(path +"memberData.ser");
             FileOutputStream adminos = new FileOutputStream(path +"adminData.ser");
-            FileOutputStream mediaos = new FileOutputStream("/data/mediaIDs.ser");
+            FileOutputStream mediaos = new FileOutputStream("/data/media/mediaIDs.ser");
 
             ObjectOutputStream out = new ObjectOutputStream(memberos);
             out.writeObject(members);
@@ -35,22 +35,23 @@ public class UserStore {
     }
 
     // Reads in serialized HashMaps
+    @SuppressWarnings("unchecked")
     public static void restore() {
         // Deserialize on startup
 
         try {
             FileInputStream memberis = new FileInputStream(path + "memberData.ser");
             FileInputStream adminis = new FileInputStream(path + "adminData.ser");
-            FileInputStream mediais = new FileInputStream("/data/mediaIDs.ser");
+            FileInputStream mediais = new FileInputStream("/data/media/mediaIDs.ser");
 
             ObjectInputStream in = new ObjectInputStream(memberis);
-            members = (HashMap) in.readObject();
+            members = (HashMap<String, Member>) in.readObject();
 
             in = new ObjectInputStream(adminis);
-            admins = (HashMap) in.readObject();
+            admins = (HashMap<String, Admin>) in.readObject();
 
             in = new ObjectInputStream(mediais);
-            mediaIDs = (HashMap) in.readObject();
+            mediaIDs = (HashMap<String, Media>) in.readObject();
 
             in.close();
             memberis.close();
@@ -58,11 +59,9 @@ public class UserStore {
             mediais.close();
         } catch (IOException ioe) {
             ioe.printStackTrace();
-            return;
         } catch (ClassNotFoundException c) {
             System.out.println("Class not found");
             c.printStackTrace();
-            return;
         }
     }
 

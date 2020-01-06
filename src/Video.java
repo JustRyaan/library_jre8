@@ -1,6 +1,6 @@
 import java.time.Duration;
 
-public class Video extends ElectronicMedia {
+public abstract class Video extends ElectronicMedia {
     private VideoFormat format;
     private Genre genre;
 

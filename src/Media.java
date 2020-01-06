@@ -1,7 +1,7 @@
 import java.io.Serializable;
 import java.time.LocalDate;
 
-public class Media implements Serializable {
+public abstract class Media implements Serializable {
     private String stockID;
     private String title;
     private Double price;

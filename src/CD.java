@@ -1,6 +1,6 @@
 import java.time.Duration;
 
-public class CD extends ElectronicMedia {
+public abstract class CD extends ElectronicMedia {
     private CDType type;
     private Integer numTracks;
     private String artist;

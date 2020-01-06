@@ -1,7 +1,7 @@
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-public class Journal extends PrintMedia {
+public abstract class Journal extends PrintMedia {
     private String ISSN;
     private String issueNum;
     private LocalDate dateOfIssue;

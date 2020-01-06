@@ -19,6 +19,6 @@ public interface Search {
     // CD searches
     public List<CDItem> searchCDTitle(String title);
     public List<CDItem> searchCDArtist(String artist);
-    public List<CDItem> searchCDPublisher(String artist);
+    public List<CDItem> searchCDPublisher(String publisher);
 
 }

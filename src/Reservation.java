@@ -56,7 +56,7 @@ public class Reservation implements Serializable {
     public static void store() {
         // Serialize
         try {
-            FileOutputStream ros = new FileOutputStream("reservationData");
+            FileOutputStream ros = new FileOutputStream("/data/reservationData.ser");
 
             ObjectOutputStream out = new ObjectOutputStream(ros);
             out.writeObject(reservedMedia);
@@ -71,7 +71,7 @@ public class Reservation implements Serializable {
     public static void restore() {
         // Deserialize on startup
         try {
-            FileInputStream ris = new FileInputStream("reservationData");
+            FileInputStream ris = new FileInputStream("/data/reservationData.ser");
 
             ObjectInputStream in = new ObjectInputStream(ris);
             reservedMedia = (HashMap) in.readObject();
