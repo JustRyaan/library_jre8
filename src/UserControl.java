@@ -1,6 +1,3 @@
-import Data.AccountStatus;
-import Data.AccountType;
-import Data.Person;
 import com.lambdaworks.crypto.SCryptUtil;
 
 import java.util.Random;
