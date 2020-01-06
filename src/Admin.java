@@ -7,6 +7,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.EnumSet;
 import java.util.Random;
 import java.util.Scanner;
+import java.util.function.ToDoubleBiFunction;
 
 public class Admin extends Account  {
     private static Scanner in = new Scanner(System.in);
@@ -241,7 +242,7 @@ public class Admin extends Account  {
     }
     // Edit book
     public static void editBook() {
-
+        // TODO: implement edit book
     }
 
 
@@ -284,7 +285,7 @@ public class Admin extends Account  {
     }
     // Edit journal
     public static void editJournal() {
-
+        // TODO: implement edit journal
     }
 
 
@@ -325,7 +326,7 @@ public class Admin extends Account  {
     }
     // Edit video
     public static void editVideo() {
-
+        // TODO: implement edit video
     }
 
 
@@ -369,7 +370,7 @@ public class Admin extends Account  {
     }
     // Edit CD
     public static void editCD() {
-
+        // TODO: implement edit CD
     }
 
 

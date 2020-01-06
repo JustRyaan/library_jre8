@@ -15,7 +15,7 @@ public class Library {
     private static Scanner in = new Scanner(System.in);
 
     public static void main(String[] args) throws Exception {
-
+        // TODO: main method control loop
         UserStore.restore();
 //        Reservation.restore();
 //        Lending.restore();
@@ -152,7 +152,7 @@ public class Library {
             choice = in.nextInt();
             in.nextLine();
             switch (choice) {
-
+                // TODO: finish implementing member menu
             }
 
         }
@@ -228,6 +228,7 @@ public class Library {
                     Admin.addCD();
                     break;
                 case 8:
+                    // TODO: finish implementing admin menu
                 case 9:
                 case 10:
                 case 11:
@@ -267,12 +268,14 @@ public class Library {
         if (!validateAdmin(id, password)) {
             return null;
         }
+        // TODO: add logging to admin logins
         return UserStore.getAdmin(id);
     }
     public static Member memberLogin(String id, String password) {
         if (!validateMember(id, password)) {
             return null;
         }
+        // TODO: add logging to user logins
         return UserStore.getMember(id);
     }
 

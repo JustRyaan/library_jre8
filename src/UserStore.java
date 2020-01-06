@@ -1,35 +1,34 @@
 import java.io.*;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 
 public class UserStore {
 
     private static HashMap<String, Admin> admins = new HashMap<>();
     private static HashMap<String, Member> members = new HashMap<>();
-    private static HashMap<String, Media> mediaTitles = new HashMap<>();
+    private static HashMap<String, Media> mediaIDs = new HashMap<>();
+    private static final String path = "/data/users/";
 
     // Serializes HashMaps
     public static void store() {
         // Serialize
         try {
-            FileOutputStream mos = new FileOutputStream("memberData");
-            FileOutputStream aos = new FileOutputStream("adminData");
-            FileOutputStream mtos = new FileOutputStream("mediaTitles");
+            FileOutputStream memberos = new FileOutputStream(path +"memberData.ser");
+            FileOutputStream adminos = new FileOutputStream(path +"adminData.ser");
+            FileOutputStream mediaos = new FileOutputStream("/data/mediaIDs.ser");
 
-            ObjectOutputStream out = new ObjectOutputStream(mos);
+            ObjectOutputStream out = new ObjectOutputStream(memberos);
             out.writeObject(members);
 
-            out = new ObjectOutputStream(aos);
+            out = new ObjectOutputStream(adminos);
             out.writeObject(admins);
 
-            out = new ObjectOutputStream(mtos);
-            out.writeObject(mediaTitles);
+            out = new ObjectOutputStream(mediaos);
+            out.writeObject(mediaIDs);
 
             out.close();
-            mos.close();
-            aos.close();
-            mtos.close();
+            memberos.close();
+            adminos.close();
+            mediaos.close();
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
@@ -38,24 +37,25 @@ public class UserStore {
     // Reads in serialized HashMaps
     public static void restore() {
         // Deserialize on startup
-        try {
-            FileInputStream mis = new FileInputStream("memberData");
-            FileInputStream ais = new FileInputStream("adminData");
-            FileInputStream mtis = new FileInputStream("mediaTitles");
 
-            ObjectInputStream in = new ObjectInputStream(mis);
+        try {
+            FileInputStream memberis = new FileInputStream(path + "memberData.ser");
+            FileInputStream adminis = new FileInputStream(path + "adminData.ser");
+            FileInputStream mediais = new FileInputStream("/data/mediaIDs.ser");
+
+            ObjectInputStream in = new ObjectInputStream(memberis);
             members = (HashMap) in.readObject();
 
-            in = new ObjectInputStream(ais);
+            in = new ObjectInputStream(adminis);
             admins = (HashMap) in.readObject();
 
-            in = new ObjectInputStream(mtis);
-            mediaTitles = (HashMap) in.readObject();
+            in = new ObjectInputStream(mediais);
+            mediaIDs = (HashMap) in.readObject();
 
             in.close();
-            mis.close();
-            ais.close();
-            mtis.close();
+            memberis.close();
+            adminis.close();
+            mediais.close();
         } catch (IOException ioe) {
             ioe.printStackTrace();
             return;
@@ -68,12 +68,12 @@ public class UserStore {
 
     // Check if stockID has been used for media - TRUE if FOUND, otherwise false
     public static boolean checkStockID(String id) {
-        return mediaTitles.containsKey(id);
+        return mediaIDs.containsKey(id);
     }
 
     // Add media item to map of titles
     public static void addMedia(Media media) {
-        mediaTitles.put(media.getStockID(), media);
+        mediaIDs.put(media.getStockID(), media);
     }
 
     // Store user in HashMap using their ID as the key
