@@ -1,28 +1,21 @@
 import java.time.Duration;
 
-public class ElectronicMedia extends Media {
-    private Duration runtime;
+public abstract class ElectronicMedia extends Media {
+    private String runtime;
     private String typeofCase;
 
-    public ElectronicMedia(String stockID, String title, Double price, String publisher, Duration runtime, String typeofCase){
+    public ElectronicMedia(String stockID, String title, Double price, String publisher, String runtime, String typeofCase){
         super(stockID, title, price, publisher);
-        this.runtime = runtime;
+        this.runtime = runtime + " mins";
         this.typeofCase = typeofCase;
     }
 
     // Getter methods
-    public Duration getRuntime() {
+    public String getRuntime() {
         return this.runtime;
     }
     public String getTypeofCase() {
         return this.typeofCase;
     }
 
-    // Setter methods
-    public void setRuntime(Duration duration) {
-        this.runtime = runtime;
-    }
-    public void setTypeofCase(String typeofCase) {
-        this.typeofCase = typeofCase;
-    }
 }

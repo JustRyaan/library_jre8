@@ -9,12 +9,8 @@ public enum AccountStatus {
         this.displayName = displayName;
     }
 
-    public String displayName() {
-        return displayName;
-    }
-
     @Override
     public String toString() {
-        return "Defines account status.";
+        return displayName;
     }
 }

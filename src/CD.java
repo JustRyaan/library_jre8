@@ -1,11 +1,11 @@
 import java.time.Duration;
 
-public abstract class CD extends ElectronicMedia {
+public class CD extends ElectronicMedia {
     private CDType type;
     private Integer numTracks;
     private String artist;
 
-    public CD(String stockID, String title, Double price, String publisher, Duration runtime, String typeofCase,
+    public CD(String stockID, String title, Double price, String publisher, String runtime, String typeofCase,
               CDType type, Integer numTracks, String artist) {
         super(stockID, title, price, publisher, runtime, typeofCase);
         this.type = type;
@@ -24,14 +24,20 @@ public abstract class CD extends ElectronicMedia {
         return this.artist;
     }
 
-    // Setter methods
-    public void setType(CDType type) {
-        this.type = type;
+    @Override
+    // Prints all info about the CD
+    public String getFullInfo() {
+        return "===============================================" +
+                "\n       CD #ID: " + this.getStockID() +
+                "\n===============================================" +
+                "\nTitle: " + this.getTitle() +
+                "\nArtist: " + this.getArtist() +
+                "\nPublisher: " + this.getPublisher() +
+                "\nTracks: " + this.getNumTracks() +
+                "\nRuntime: " + this.getRuntime() +
+                "\nCase type: " + this.getTypeofCase() +
+                "\nCD type: " + this.getCDType() +
+                "\nPrice: £" + this.getPrice();
     }
-    public void setNumTracks(Integer numTracks) {
-        this.numTracks = numTracks;
-    }
-    public void setArtist(String artist) {
-        this.artist = artist;
-    }
+
 }

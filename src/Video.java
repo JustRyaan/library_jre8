@@ -1,10 +1,10 @@
 import java.time.Duration;
 
-public abstract class Video extends ElectronicMedia {
+public class Video extends ElectronicMedia {
     private VideoFormat format;
     private Genre genre;
 
-    public Video(String stockID, String title, Double price, String publisher, Duration runtime,
+    public Video(String stockID, String title, Double price, String publisher, String runtime,
                  String typeofCase, VideoFormat format, Genre genre) {
         super(stockID, title, price, publisher, runtime, typeofCase);
         this.format = format;
@@ -19,11 +19,20 @@ public abstract class Video extends ElectronicMedia {
         return this.genre;
     }
 
-    // Setter methods
-    public void setFormat(VideoFormat format) {
-        this.format = format;
+
+    @Override
+    // Prints all info about the video
+    public String getFullInfo() {
+        return "===============================================" +
+                "\n       Video #ID: " + this.getStockID() +
+                "\n===============================================" +
+                "\nTitle: " + this.getTitle() +
+                "\nPublisher: " + this.getPublisher() +
+                "\nGenre: " + this.getGenre() +
+                "\nRuntime: " + this.getRuntime() +
+                "\nVideo format: " + this.getFormat() +
+                "\nCase type: " + this.getTypeofCase() +
+                "\nPrice: £" + this.getPrice();
     }
-    public void setGenre(Genre genre) {
-        this.genre = genre;
-    }
+
 }

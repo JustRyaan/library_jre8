@@ -1,39 +1,95 @@
 import com.lambdaworks.crypto.SCryptUtil;
 
-import java.time.Duration;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.EnumSet;
 import java.util.Random;
-import java.util.Scanner;
-import java.util.function.ToDoubleBiFunction;
 
 public class Admin extends Account  {
-    private static Scanner in = new Scanner(System.in);
-    private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     public Admin(String id, String password, Person person) {
         super(id, password, person);
     }
 
+    @Override
+    public int getLoansAvailable() {
+        return 0;
+    }
 
+    @Override
+    public void editDetails() {
+        boolean menu = true;
+        while(menu) {
+            Library.clearScreen();
+            System.out.print(
+                    "\n===============================================" +
+                            "\nWhat would you like to update, "+ this.getPerson().getForename() + "?" +
+                            "\n===============================================" +
+                            "\n 1. Password" +
+                            "\n 2. Forename" +
+                            "\n 3. Surname" +
+                            "\n 4. Email" +
+                            "\n 5. Phone number" +
+                            "\n 6. Go back..." +
+                            "\n Please choose an option: "
+            );
+            String choice = in.nextLine();
+            switch (choice) {
+                case "1":
+                    if(updatePassword()) UserStore.addAdmin(this);
+                    break;
+                case "2":
+                    System.out.print("\nEnter new forename: ");
+                    this.getPerson().setForename(in.nextLine());
+                    UserStore.addAdmin(this);
+                    System.out.println("Forename updated!");
+                    break;
+                case "3":
+                    System.out.print("\nEnter new surname: ");
+                    this.getPerson().setSurname(in.nextLine());
+                    UserStore.addAdmin(this);
+                    System.out.println("Surname updated!");
+                    break;
+                case "4":
+                    System.out.print("\nEnter new email: ");
+                    this.getPerson().setEmail(in.nextLine());
+                    UserStore.addAdmin(this);
+                    System.out.println("Email updated!");
+                    break;
+                case "5":
+                    System.out.print("\nEnter new phone number: ");
+                    this.getPerson().setPhone(in.nextLine());
+                    UserStore.addAdmin(this);
+                    System.out.println("Phone number updated!");
+                    break;
+                case "6":
+                    menu = false;
+                    break;
+                default:
+                    System.out.println("Please choose a valid option.");
+                    break;
+            }
+        }
+    }
+
+    @Override
     // Walks admin user through member creation
-    public static void addMember(){
+    public void addMember(){
         Library.clearScreen();
 
         // Automatically assign a 6 digit ID
-        String id = "M" + generateID();
+        System.out.print("\nUser ID: ");
+        String id = in.nextLine();
         while(UserStore.memberExists(id)) {
-            id = "M" + generateID();
+            System.out.print("\nSorry, ID '" + id + "' is already in use, try again: ");
+            id = in.nextLine();
         }
-        System.out.println("New ID (write this down): " + id);
+
 
         // Create password and hash it
-        System.out.print("Password: ");
-        String pass = in.nextLine();
+        String pass = generatePw();
         String hashedPass = SCryptUtil.scrypt(pass, 16384, 8, 1);
-
+        System.out.print("Generated password (write this down): " + pass + "\n");
+        System.out.println("Press enter to continue...");
+        in.nextLine();
         // Get user details
         System.out.print("Forename: ");
         String fname = in.nextLine();
@@ -104,136 +160,137 @@ public class Admin extends Account  {
             Member nm = new Member(id, hashedPass, status, type, np);
             UserStore.addMember(nm);
             System.out.println("\nNew user created!\nID: " + id + "  -  Password: " + pass);
+            System.out.println("Press enter to continue...");
+            in.nextLine();
         }
         UserStore.store();
     }
-    // Walks admin user through member editing
-    public static void editMember(String id){
-        // Create locally editable member object
-        Member member = UserStore.getMember(id);
-        // Display menu of fields to edit
+
+    @Override
+    public void addMedia() {
         boolean menu = true;
-        while (menu) {
+        while(menu) {
             Library.clearScreen();
             System.out.print(
-                    "\nUser: " + member.getPerson().getFullName() + " (" + member.getId() + ")" +
-                            "\nWhat would you like to edit?" +
-                            "\n1. Name" +
-                            "\n2. Phone" +
-                            "\n3. D.O.B" +
-                            "\n4. Address" +
-                            "\n5. Email" +
-                            "\n6. Return to menu" +
+                    "\n===============================================" +
+                            "\nWhat would you like to add?" +
+                            "\n===============================================" +
+                            "\n 1. Book" +
+                            "\n 2. Journal" +
+                            "\n 3. Video" +
+                            "\n 4. CD" +
+                            "\n 5. Go back..." +
                             "\nPlease choose an option: ");
-            int choice;
-            choice = in.nextInt();
-            in.nextLine();
-            switch (choice) {
-                case 1:
-                    System.out.println("Enter new forename: ");
-                        String fname = in.nextLine();
-                    System.out.println("Enter new surname: ");
-                        String sname = in.nextLine();
-                    member.getPerson().setName(fname, sname);
-                    System.out.println("Name has been updated!");
+            String choice = in.nextLine();
+            switch(choice) {
+                case "1":
+                    addBook();
                     Library.sleepFor(1500);
                     break;
-                case 2:
-                    System.out.println("Enter new phone number: ");
-                        String phone = in.nextLine();
-                    member.getPerson().setPhone(phone);
-                    System.out.println("Phone number has been updated!");
+                case "2":
+                    addJournal();
                     Library.sleepFor(1500);
                     break;
-                case 3:
-                    if(member.getType() == AccountType.STAFF) {
-                        System.out.println("Error: This type of user doesn't store their D.O.B.");
-                        break;
-                    } else {
-                        System.out.println("Enter new D.O.B (dd/mm/yyy): ");
-                            String dob = in.nextLine();
-                        member.getPerson().setDOB(dob);
-                        System.out.println("Date of birth has been updated!");
-                    }
+                case "3":
+                    addVideo();
                     Library.sleepFor(1500);
                     break;
-                case 4:
-                    if(member.getType() == AccountType.STAFF) {
-                        System.out.println("Error: This type of user doesn't store their address.");
-                        break;
-                    } else {
-                        System.out.println("Enter new street address: ");
-                            String address = in.nextLine();
-                        System.out.println("Enter new town: ");
-                            String town = in.nextLine();
-                        System.out.println("Enter new postcode: ");
-                            String postcode = in.nextLine();
-                        Address newAddress = new Address(address, town, postcode);
-                        member.getPerson().setAddress(newAddress);
-                        System.out.println("Address has been updated!");
-                    }
+                case "4":
+                    addCD();
                     Library.sleepFor(1500);
                     break;
-                case 5:
-                    if(member.getType() != AccountType.STAFF) {
-                        System.out.println("Error: This type of user doesn't have an email address!");
-                    } else {
-                        System.out.println("Enter new email: ");
-                            String email = in.nextLine();
-                        member.getPerson().setEmail(email);
-                        System.out.println("Email has been updated!");
-                    }
-                    Library.sleepFor(1500);
-                    break;
-                case 6:
-                    UserStore.updateMember(member);
-                    System.out.println("Returning to menu... ");
-                    Library.sleepFor(1500);
+                case "5":
                     menu = false;
                     break;
                 default:
                     System.out.println("Please enter a valid option.");
-                    Library.sleepFor(1500);
+                    Library.sleepFor(2000);
                     break;
             }
         }
     }
-    // Removes a member
-    public static void removeMember(String id) {
-        UserStore.removeMember(id);
-        System.out.println("User deleted successfully.");
-    }
 
+    @Override
+    public void showEditMenu() {
+        boolean menu = true;
+        while(menu){
+            Library.clearScreen();
+            System.out.print(
+                    "\n===============================================" +
+                            "\nWhat would you like to edit?" +
+                            "\n===============================================" +
+                            "\n 1. A Book" +
+                            "\n 2. A Journal" +
+                            "\n 3. A Video" +
+                            "\n 4. A CD" +
+                            "\n 5. Go back..." +
+                            "\nPlease choose an option: ");
+            String choice = in.nextLine();
+            switch(choice) {
+                case "1":
+                    System.out.println("Enter book ID: ");
+                    String bookID = in.nextLine();
+                    editBook(bookID.toUpperCase());
+                    Library.sleepFor(1500);
+                    break;
+                case "2":
+                    System.out.println("Enter journal ID: ");
+                    String journalID = in.nextLine();
+                    editJournal(journalID.toUpperCase());
+                    Library.sleepFor(1500);
+                    break;
+                case "3":
+                    System.out.println("Enter video ID: ");
+                    String videoID = in.nextLine();
+                    editVideo(videoID.toUpperCase());
+                    Library.sleepFor(1500);
+                    break;
+                case "4":
+                    System.out.println("Enter CD ID: ");
+                    String CDID = in.nextLine();
+                    editCD(CDID.toUpperCase());
+                    Library.sleepFor(1500);
+                    break;
+                case "5":
+                    menu = false;
+                    break;
+                default:
+                    System.out.println("Please enter a valid option.");
+                    Library.sleepFor(2000);
+                    break;
+            }
+        }
+
+    }
 
     // Adds book
     public static void addBook() {
         Library.clearScreen();
-        String id = generateID();
-        while(UserStore.checkStockID(id)) {
-            id = generateID();
+        String id = "B" + generateID();
+        while(Catalogue.checkStockID(id)) {
+            id = "B" + generateID();
         }
         System.out.println("Stock ID: " + id);
         System.out.println("Enter Title: ");
-            String title = in.nextLine();
+        String title = in.nextLine();
         System.out.println("Enter Author: ");
-            String author = in.nextLine();
+        String author = in.nextLine();
         System.out.println("Enter publisher: ");
-            String publisher = in.nextLine();
+        String publisher = in.nextLine();
         System.out.println("Enter ISBN: ");
-            String ISBN = in.nextLine();
+        String ISBN = in.nextLine();
         Genre genre = selectGenre();
         Double price = inputPrice();
         System.out.println("Enter number of pages:");
         Integer numPages = inputInteger();
 
-        BookItem newBook = new BookItem(id, title, price, genre, publisher, numPages, ISBN, author);
+        Book newBook = new Book(id, title, price, genre, publisher, numPages, ISBN, author);
         Library.clearScreen();
 
-        System.out.println(newBook.getBookInfo());
+        System.out.println(newBook.getFullInfo());
         System.out.println("Is the above information correct? y/n: ");
         if(in.nextLine().toLowerCase().equals("y")){
-            UserStore.addMedia(newBook);
-            Catalogue.addBook(newBook);
+            Catalogue.addMedia(newBook);
             System.out.println("Book added successfully!");
             Library.sleepFor(1500);
             return;
@@ -242,42 +299,73 @@ public class Admin extends Account  {
         Library.sleepFor(2000);
     }
     // Edit book
-    public static void editBook() {
-        // TODO: implement edit book
+    public static void editBook(String bookID) {
+        Library.clearScreen();
+        if (!Catalogue.checkStockID(bookID)) {
+            System.out.println("No book found with the ID \"" + bookID + "\"");
+            Library.sleepFor(1500);
+        } else {
+            System.out.println("Stock ID: " + bookID);
+            System.out.println("Enter new title: ");
+            String newtitle = in.nextLine();
+            System.out.println("Enter new author: ");
+            String newauthor = in.nextLine();
+            System.out.println("Enter new publisher: ");
+            String newpublisher = in.nextLine();
+            System.out.println("Enter new ISBN: ");
+            String newISBN = in.nextLine();
+            Genre newgenre = selectGenre();
+            Double newprice = inputPrice();
+            System.out.println("Enter number of pages:");
+            Integer newnumPages = inputInteger();
+
+            Book newBook = new Book(bookID, newtitle, newprice, newgenre, newpublisher, newnumPages, newISBN, newauthor);
+            Library.clearScreen();
+
+            System.out.println(newBook.getFullInfo());
+            System.out.println("Is the above information correct? y/n: ");
+            if (in.nextLine().toLowerCase().equals("y")) {
+                Catalogue.updateMedia(newBook);
+                System.out.println("Book added successfully!");
+                Library.sleepFor(1500);
+                return;
+            }
+            System.out.println("Returning you to the menu, please try again... ");
+            Library.sleepFor(2000);
+        }
     }
 
 
     // Adds journal
     public static void addJournal() {
         Library.clearScreen();
-        String id = generateID();
-        while(UserStore.checkStockID(id)) {
-            id = generateID();
+        String id = "J" + generateID();
+        while(Catalogue.checkStockID(id)) {
+            id = "J" + generateID();
         }
         System.out.println("Stock ID: " + id);
         System.out.println("Enter Title: ");
-            String title = in.nextLine();
+        String title = in.nextLine();
         System.out.println("Enter Issue Number: ");
-            String issueNum = in.nextLine();
+        String issueNum = in.nextLine();
         System.out.println("Enter Issue Date (dd/mm/yyyy): ");
-            LocalDate issueDate = LocalDate.parse(in.nextLine(), formatter);
+        String issueDate = in.nextLine();
         System.out.println("Enter publisher: ");
-            String publisher = in.nextLine();
+        String publisher = in.nextLine();
         System.out.println("Enter ISSN: ");
-            String ISSN = in.nextLine();
+        String ISSN = in.nextLine();
         Genre genre = selectGenre();
         Double price = inputPrice();
         System.out.println("Enter number of pages: ");
         Integer numPages = inputInteger();
 
-        JournalItem newJournal = new JournalItem(id, title, price, publisher, genre, numPages, ISSN, issueNum, issueDate);
+        Journal newJournal = new Journal(id, title, price, publisher, genre, numPages, ISSN, issueNum, issueDate);
         Library.clearScreen();
 
-        System.out.println(newJournal.getJournalInfo());
+        System.out.println(newJournal.getFullInfo());
         System.out.println("Is the above information correct? y/n: ");
         if(in.nextLine().toLowerCase().equals("y")){
-            UserStore.addMedia(newJournal);
-            Catalogue.addJournal(newJournal);
+            Catalogue.addMedia(newJournal);
             System.out.println("Journal added successfully!");
             Library.sleepFor(1500);
             return;
@@ -286,40 +374,73 @@ public class Admin extends Account  {
         Library.sleepFor(2000);
     }
     // Edit journal
-    public static void editJournal() {
-        // TODO: implement edit journal
+    public static void editJournal(String journalID) {
+        Library.clearScreen();
+        if (!Catalogue.checkStockID(journalID)) {
+            System.out.println("No journal found with the ID \"" + journalID + "\"");
+            Library.sleepFor(1500);
+        } else {
+            System.out.println("Stock ID: " + journalID);
+            System.out.println("Enter new title: ");
+            String title = in.nextLine();
+            System.out.println("Enter new issue number: ");
+            String issueNum = in.nextLine();
+            System.out.println("Enter new issue date (dd/mm/yyyy): ");
+            String issueDate = in.nextLine();
+            System.out.println("Enter new publisher: ");
+            String publisher = in.nextLine();
+            System.out.println("Enter new ISSN: ");
+            String ISSN = in.nextLine();
+            Genre genre = selectGenre();
+            Double price = inputPrice();
+            System.out.println("Enter number of pages: ");
+            Integer numPages = inputInteger();
+
+            Journal newJournal = new Journal(journalID, title, price, publisher, genre, numPages, ISSN, issueNum, issueDate);
+            Library.clearScreen();
+
+            System.out.println(newJournal.getFullInfo());
+            System.out.println("Is the above information correct? y/n: ");
+            if(in.nextLine().toLowerCase().equals("y")){
+                Catalogue.updateMedia(newJournal);
+                System.out.println("Journal added successfully!");
+                Library.sleepFor(1500);
+                return;
+            }
+            System.out.println("Returning you to the menu, please try again... ");
+            Library.sleepFor(2000);
+        }
     }
+
 
 
     // Adds video
     public static void addVideo() {
         Library.clearScreen();
-        String id = generateID();
-        while(UserStore.checkStockID(id)) {
-            id = generateID();
+        String id = "V" + generateID();
+        while(Catalogue.checkStockID(id)) {
+            id = "V" + generateID();
         }
         System.out.println("Stock ID: " + id);
         System.out.println("Enter Title: ");
-            String title = in.nextLine();
+        String title = in.nextLine();
         System.out.println("Enter publisher: ");
-            String publisher = in.nextLine();
+        String publisher = in.nextLine();
         System.out.println("Enter type of storage case: ");
-            String typeofCase = in.nextLine();
+        String typeofCase = in.nextLine();
         System.out.println("Enter runtime (in minutes): ");
-            int minutes = inputInteger();
-            Duration runtime = Duration.ofMinutes(minutes);
+        String runtime = in.nextLine();
         Genre genre = selectGenre();
         Double price = inputPrice();
         VideoFormat format = selectVideoFormat();
 
-        VideoItem newVideo = new VideoItem(id, title, price, publisher, runtime, typeofCase, format, genre);
+        Video newVideo = new Video(id, title, price, publisher, runtime, typeofCase, format, genre);
         Library.clearScreen();
 
-        System.out.println(newVideo.getVideoInfo());
+        System.out.println(newVideo.getFullInfo());
         System.out.println("Is the above information correct? y/n: ");
         if(in.nextLine().toLowerCase().equals("y")){
-            UserStore.addMedia(newVideo);
-            Catalogue.addVideo(newVideo);
+            Catalogue.addMedia(newVideo);
             System.out.println("Video added successfully!");
             Library.sleepFor(1500);
             return;
@@ -328,17 +449,48 @@ public class Admin extends Account  {
         Library.sleepFor(2000);
     }
     // Edit video
-    public static void editVideo() {
-        // TODO: implement edit video
+    public static void editVideo(String videoID) {
+        Library.clearScreen();
+        if (!Catalogue.checkStockID(videoID)) {
+            System.out.println("No video found with the ID \"" + videoID + "\"");
+            Library.sleepFor(1500);
+        } else {
+            System.out.println("Stock ID: " + videoID);
+            System.out.println("Enter new title: ");
+            String title = in.nextLine();
+            System.out.println("Enter new publisher: ");
+            String publisher = in.nextLine();
+            System.out.println("Enter new type of storage case: ");
+            String typeofCase = in.nextLine();
+            System.out.println("Enter new runtime (in minutes): ");
+            String runtime = in.nextLine();
+            Genre genre = selectGenre();
+            Double price = inputPrice();
+            VideoFormat format = selectVideoFormat();
+
+            Video newVideo = new Video(videoID, title, price, publisher, runtime, typeofCase, format, genre);
+            Library.clearScreen();
+
+            System.out.println(newVideo.getFullInfo());
+            System.out.println("Is the above information correct? y/n: ");
+            if (in.nextLine().toLowerCase().equals("y")) {
+                Catalogue.updateMedia(newVideo);
+                System.out.println("Video added successfully!");
+                Library.sleepFor(1500);
+                return;
+            }
+            System.out.println("Returning you to the menu, please try again... ");
+            Library.sleepFor(2000);
+        }
     }
 
 
     // Adds CD
     public static void addCD() {
         Library.clearScreen();
-        String id = generateID();
-        while(UserStore.checkStockID(id)) {
-            id = generateID();
+        String id = "CD" + generateID();
+        while(Catalogue.checkStockID(id)) {
+            id = "CD" + generateID();
         }
         System.out.println("Stock ID: " + id);
         System.out.println("Enter Title: ");
@@ -349,22 +501,20 @@ public class Admin extends Account  {
         String publisher = in.nextLine();
         System.out.println("Enter type of storage case: ");
         String typeofCase = in.nextLine();
-        System.out.println("Enter runtime (in minutes): ");
-        int minutes = inputInteger();
-        Duration runtime = Duration.ofMinutes(minutes);
+        System.out.println("Enter runtime (in minutes only): ");
+        String runtime = in.nextLine();
         System.out.println("Enter the number of tracks: ");
         Integer numTracks = inputInteger();
         Double price = inputPrice();
         CDType type = selectCDType();
 
-        CDItem newCD = new CDItem(id, title, price, publisher, runtime, typeofCase, type, numTracks, artist);
+        CD newCD = new CD(id, title, price, publisher, runtime, typeofCase, type, numTracks, artist);
         Library.clearScreen();
 
-        System.out.println(newCD.getCDInfo());
+        System.out.println(newCD.getFullInfo());
         System.out.println("Is the above information correct? y/n: ");
         if(in.nextLine().toLowerCase().equals("y")){
-            UserStore.addMedia(newCD);
-            Catalogue.addCD(newCD);
+            Catalogue.addMedia(newCD);
             System.out.println("CD added successfully!");
             Library.sleepFor(1500);
             return;
@@ -373,8 +523,42 @@ public class Admin extends Account  {
         Library.sleepFor(2000);
     }
     // Edit CD
-    public static void editCD() {
-        // TODO: implement edit CD
+    public static void editCD(String CDID) {
+        Library.clearScreen();
+        if (!Catalogue.checkStockID(CDID)) {
+            System.out.println("No video found with the ID \"" + CDID + "\"");
+            Library.sleepFor(1500);
+        } else {
+            System.out.println("Stock ID: " + CDID);
+            System.out.println("Enter new title: ");
+            String title = in.nextLine();
+            System.out.println("Enter new artist: ");
+            String artist = in.nextLine();
+            System.out.println("Enter new publisher: ");
+            String publisher = in.nextLine();
+            System.out.println("Enter new type of storage case: ");
+            String typeofCase = in.nextLine();
+            System.out.println("Enter new runtime (in minutes only): ");
+            String runtime = in.nextLine();
+            System.out.println("Enter the new number of tracks: ");
+            Integer numTracks = inputInteger();
+            Double price = inputPrice();
+            CDType type = selectCDType();
+
+            CD newCD = new CD(CDID, title, price, publisher, runtime, typeofCase, type, numTracks, artist);
+            Library.clearScreen();
+
+            System.out.println(newCD.getFullInfo());
+            System.out.println("Is the above information correct? y/n: ");
+            if(in.nextLine().toLowerCase().equals("y")){
+                Catalogue.updateMedia(newCD);
+                System.out.println("CD added successfully!");
+                Library.sleepFor(1500);
+                return;
+            }
+            System.out.println("Returning you to the menu, please try again... ");
+            Library.sleepFor(2000);
+        }
     }
 
 
@@ -386,9 +570,20 @@ public class Admin extends Account  {
         int num = r.nextInt(999999);
         return String.format("%06d", num);
     }
+    private static String generatePw() {
+//        Random r = new Random();
+//        int num = r.nextInt(99999999);
+//        return String.format("%08d", num);
+
+        // Hi Jacqui, above is my implementation for a password generator that returns an 8-digit number, I found the
+        // one below at https://stackoverflow.com/a/53349505 because I wanted to use more than just numbers.
+
+        return new Random().ints(10, 33, 127).collect(StringBuilder::new,
+                StringBuilder::appendCodePoint, StringBuilder::append)
+                .toString();
+    }
     // Gets a genre from enum list
     private static Genre selectGenre() {
-        in.nextLine();
         for (Genre info : EnumSet.allOf(Genre.class)) {
             System.out.println(info);
         }
@@ -411,6 +606,7 @@ public class Admin extends Account  {
                 in.next();
             }
             num = in.nextInt();
+            in.nextLine();
         } while (num <= 0);
         return num;
     }
@@ -425,6 +621,7 @@ public class Admin extends Account  {
                 in.next();
             }
             price = in.nextDouble();
+            in.nextLine();
         } while (price < 0);
         return price;
     }
@@ -434,28 +631,21 @@ public class Admin extends Account  {
         System.out.print(
                 "    1. " + VideoFormat.VCR.displayName() +
                         "\n    2. " + VideoFormat.DVD.displayName() +
-                        "\n    3. " + VideoFormat.DIGITAL.displayName() +
-                        "\n    4. " + VideoFormat.BLURAY.displayName() +
+                        "\n    3. " + VideoFormat.BLURAY.displayName() +
                         "\nSelect video format: ");
         VideoFormat format = null;
         while(select) {
-            int choice;
-            choice = in.nextInt();
-            in.nextLine();
+            String choice = in.nextLine();
             switch (choice) {
-                case 1:
+                case "1":
                     format = VideoFormat.VCR;
                     select = false;
                     break;
-                case 2:
+                case "2":
                     format = VideoFormat.DVD;
                     select = false;
                     break;
-                case 3:
-                    format = VideoFormat.DIGITAL;
-                    select = false;
-                    break;
-                case 4:
+                case "3":
                     format = VideoFormat.BLURAY;
                     select = false;
                     break;
@@ -475,19 +665,17 @@ public class Admin extends Account  {
                         "\nSelect video format: ");
         CDType type = null;
         while(select) {
-            int choice;
-            choice = in.nextInt();
-            in.nextLine();
+            String choice = in.nextLine();
             switch (choice) {
-                case 1:
+                case "1":
                     type = CDType.CDDA;
                     select = false;
                     break;
-                case 2:
+                case "2":
                     type = CDType.CDR;
                     select = false;
                     break;
-                case 3:
+                case "3":
                     type = CDType.CDRW;
                     select = false;
                     break;

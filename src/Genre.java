@@ -16,7 +16,7 @@ public enum Genre {
     HEALTH_AND_WELL_BEING("Health and Well Being"),
     HISTORICAL_FICTION("Historical Fiction"),
     HISTORY("History"),
-    HUMOuR("Humour"),
+    HUMOUR("Humour"),
     HORROR("Horror"),
     JOURNAL("Journal"),
     MATHS("Maths"),
@@ -26,6 +26,7 @@ public enum Genre {
     SATIRE("Satire"),
     SCIENCE("Science"),
     SCIENCE_FICTION("Science Fiction"),
+    SELF_IMPROVEMENT("Self Improvement"),
     TEXTBOOK("Textbook"),
     THRILLER("Thriller"),
     TRAVEL("Travel");
@@ -36,11 +37,7 @@ public enum Genre {
         this.displayName = displayName;
     }
 
-    public String displayName() {
-        return displayName;
-    }
-
-    private final static Set<String> values = new HashSet<String>(Genre.values().length);
+    private final static Set<String> values = new HashSet<>(Genre.values().length);
 
     static {
         for(Genre g: Genre.values())
@@ -50,7 +47,6 @@ public enum Genre {
     public static Boolean contains(String value) {
         return values.contains(value);
     }
-
 
     @Override
     public String toString() {

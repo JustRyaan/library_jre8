@@ -1,4 +1,4 @@
-public class PrintMedia extends Media {
+public abstract class PrintMedia extends Media {
     private Genre genre;
     private Integer numPages;
 
@@ -16,11 +16,5 @@ public class PrintMedia extends Media {
         return this.numPages.toString();
     }
 
-    // Setter methods
-    public void setGenre(Genre genre) {
-        this.genre = genre;
-    }
-    public void setNumPages(Integer numPages) {
-        this.numPages = numPages;
-    }
+
 }

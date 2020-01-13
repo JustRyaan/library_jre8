@@ -15,6 +15,6 @@ public enum AccountType {
 
     @Override
     public String toString() {
-        return "Defines account type.";
+        return displayName;
     }
 }

@@ -10,7 +10,7 @@ public class Person implements Serializable {
     private LocalDate DOB;
     private Address address;
 
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
 
     // Staff Constructor
@@ -33,29 +33,18 @@ public class Person implements Serializable {
     public String getForename() {
         return this.forename;
     }
-    public String getSurname() {
-        return this.surname;
-    }
     public String getFullName() {
         return this.forename + " " + this.surname;
-    }
-    public String getEmail() {
-        return this.email;
-    }
-    public String getPhone() {
-        return this.phone;
-    }
-    public String getDOB() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd LLLL yyyy");
-        return this.DOB.format(formatter);
     }
     public Address getAddress() {
         return this.address;
     }
 
     // Setter Methods
-    public void setName(String forename, String surname) {
+    public void setForename(String forename) {
         this.forename = forename;
+    }
+    public void setSurname(String surname) {
         this.surname = surname;
     }
     public void setEmail(String email) {
@@ -64,12 +53,9 @@ public class Person implements Serializable {
     public void setPhone(String phone) {
         this.phone = phone;
     }
-    public void setDOB(String DOB) {
-        this.DOB = LocalDate.parse(DOB, formatter);
-    }
-    public void setAddress(Address address) {
-        this.address = address;
-    }
+//    public void setDOB(String DOB) {
+//        this.DOB = LocalDate.parse(DOB, formatter);
+//    }
 
     @Override
     public String toString() {

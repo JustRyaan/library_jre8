@@ -16,7 +16,7 @@ public enum CDType {
 
     @Override
     public String toString() {
-        return "Defines CD type.";
+        return displayName;
     }
 
 }

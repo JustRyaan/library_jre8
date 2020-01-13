@@ -2,8 +2,7 @@ public enum VideoFormat {
 
     VCR("VCR"),
     DVD("DVD"),
-    BLURAY("Blu-ray"),
-    DIGITAL("Digital");
+    BLURAY("Blu-ray");
 
     private final String displayName;
 
@@ -17,7 +16,7 @@ public enum VideoFormat {
 
     @Override
     public String toString() {
-        return "Defines video format.";
+        return displayName;
     }
 
 }

@@ -1,86 +1,97 @@
 import java.io.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 
-public class UserStore {
+public class UserStore implements fileRW {
 
     private static HashMap<String, Admin> admins = new HashMap<>();
     private static HashMap<String, Member> members = new HashMap<>();
-    private static HashMap<String, Media> mediaIDs = new HashMap<>();
+
     private static final String path = "/data/users/";
 
     // Serializes HashMaps
     public static void store() {
         // Serialize
-        try {
-            FileOutputStream memberos = new FileOutputStream(path +"memberData.ser");
-            FileOutputStream adminos = new FileOutputStream(path +"adminData.ser");
-            FileOutputStream mediaos = new FileOutputStream("/data/media/mediaIDs.ser");
-
-            ObjectOutputStream out = new ObjectOutputStream(memberos);
-            out.writeObject(members);
-
-            out = new ObjectOutputStream(adminos);
-            out.writeObject(admins);
-
-            out = new ObjectOutputStream(mediaos);
-            out.writeObject(mediaIDs);
-
-            out.close();
-            memberos.close();
-            adminos.close();
-            mediaos.close();
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
-        }
+        fileRW.write(admins, path, "adminData");
+        fileRW.write(members, path, "memberData");
     }
 
     // Reads in serialized HashMaps
     @SuppressWarnings("unchecked")
     public static void restore() {
         // Deserialize on startup
+        members = fileRW.read(path, "adminData");
+        admins = fileRW.read(path, "memberData");
+    }
 
+
+    // Writes and reads logfiles
+    public static void writeLog(String userID, String computerID, String commit) {
+        String currentDir = System.getProperty("user.dir");
+        File directory = new File(currentDir + path + "logs/users/");
+        if(!directory.exists()){
+            if(directory.mkdirs()){
+                System.out.println("Created directory " + directory.getAbsolutePath());
+            } else {
+                System.out.println("\nERROR: Could not create directory " + directory.getAbsolutePath());
+                System.exit(-1);
+            }
+        }
+        File logfile = new File(directory + "/" + userID + ".log");
         try {
-            FileInputStream memberis = new FileInputStream(path + "memberData.ser");
-            FileInputStream adminis = new FileInputStream(path + "adminData.ser");
-            FileInputStream mediais = new FileInputStream("/data/media/mediaIDs.ser");
-
-            ObjectInputStream in = new ObjectInputStream(memberis);
-            members = (HashMap<String, Member>) in.readObject();
-
-            in = new ObjectInputStream(adminis);
-            admins = (HashMap<String, Admin>) in.readObject();
-
-            in = new ObjectInputStream(mediais);
-            mediaIDs = (HashMap<String, Media>) in.readObject();
-
-            in.close();
-            memberis.close();
-            adminis.close();
-            mediais.close();
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
-        } catch (ClassNotFoundException c) {
-            System.out.println("Class not found");
-            c.printStackTrace();
+            FileWriter out = new FileWriter(logfile, true);
+            out.write(commit);
+            out.write(System.lineSeparator());
+            out.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        File masterLog = new File(directory + "/master.log");
+        try {
+            FileWriter out = new FileWriter(masterLog, true);
+            out.write(commit + "; Computer ID: " + computerID + " (" + userID + ")");
+            out.write(System.lineSeparator());
+            out.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
-    // Check if stockID has been used for media - TRUE if FOUND, otherwise false
-    public static boolean checkStockID(String id) {
-        return mediaIDs.containsKey(id);
+    public static void readLog(String userID) {
+        String currentDir = System.getProperty("user.dir");
+        File directory = new File(currentDir + path + "logs/users/");
+        if(!directory.exists()){
+            if(directory.mkdirs()){
+                System.out.println("Created directory " + directory.getAbsolutePath());
+            } else {
+                System.out.println("\nERROR: Could not create directory " + directory.getAbsolutePath());
+                System.exit(-1);
+            }
+        }
+        File logfile = new File(directory + "/" + userID + ".log");
+        try {
+            ProcessBuilder pb = new ProcessBuilder("Notepad.exe", logfile.getAbsolutePath());
+            pb.start();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    // Add media item to map of titles
-    public static void addMedia(Media media) {
-        mediaIDs.put(media.getStockID(), media);
-    }
 
     // Store user in HashMap using their ID as the key
     public static void addMember(Member member) {
+        if(members.containsKey(member.getId())) {
+            // Prevents duplicates of dummy data after first run (IDs have to be unique)
+            return;
+        }
         members.put(member.getId(), member);
     }
 
     public static void addAdmin(Admin admin) {
+//        if(admins.containsKey(admin.getId())) {
+//            // Prevents duplicates of dummy data after first run (IDs have to be unique)
+//            return;
+//        }
         admins.put(admin.getId(), admin);
     }
 
@@ -102,14 +113,6 @@ public class UserStore {
         return admins.containsKey(id);
     }
 
-    // Remove a user
-    public static void removeMember(String id) {
-        members.remove(id);
-    }
-
-    public static void removeAdmin(String id) {
-        admins.remove(id);
-    }
 
     // Retrieve object from HashMaps
     public static Member getMember(String id) {

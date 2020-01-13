@@ -1,2 +1,6 @@
 .idea/
 data/
+.classpath
+.project
+Library.eml
+library_jre8.userlibraries
